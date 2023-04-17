@@ -1,5 +1,6 @@
 package com.example.oblig4Meg
 
+import android.content.ClipData
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.ListAdapter
@@ -9,7 +10,7 @@ import com.example.oblig4Meg.data.Basket
 import com.example.oblig4Meg.databinding.LinearViewItemBinding
 import com.example.oblig4Meg.network.ArtPhoto
 
-class LinearAdapter: ListAdapter<Basket, LinearAdapter.ArtPhotoLinearViewHolder> (DiffCallback){
+class LinearAdapter(private val onItemClicked: (Basket) -> Unit): ListAdapter<Basket, LinearAdapter.ArtPhotoLinearViewHolder> (DiffCallback){
 
 
 
@@ -38,6 +39,9 @@ class LinearAdapter: ListAdapter<Basket, LinearAdapter.ArtPhotoLinearViewHolder>
 
     override fun onBindViewHolder(holder: ArtPhotoLinearViewHolder, position: Int) {
         val basket = getItem(position)
+        holder.itemView.setOnClickListener {
+            onItemClicked(basket)
+        }
         holder.bind(basket)
     }
 }

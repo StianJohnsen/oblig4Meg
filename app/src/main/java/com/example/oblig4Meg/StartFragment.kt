@@ -45,7 +45,9 @@ class StartFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val adapter = LinearAdapter()
+        val adapter = LinearAdapter{
+            this.findNavController().navigate(R.id.action_startFragment_to_picturesFragment)
+        }
         binding.apply {
             lifecycleOwner = viewLifecycleOwner
             startFragment = this@StartFragment
