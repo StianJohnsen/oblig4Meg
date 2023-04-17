@@ -1,0 +1,19 @@
+<resources>
+    <string name="app_name">Oblig4Meg</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="besill_bilder">Bestill innrammede bilder</string>
+    <string name="send_email" />
+    <string name="treramme">Treramme</string>
+    <string name="slvramme">Sølvramme</string>
+    <string name="gullramme">Gullramme</string>
+    <string name="lite">Lite</string>
+    <string name="medium">Medium</string>
+    <string name="stor">Stor</string>
+    <string name="size_photo">Størrelse: %s</string>
+    <string name="bezel_photo">Rammetype: %s</string>
+    <string name="price_photo">Pris: Kr %d</string>
+
+    <string name ="total_price">Totalpris: %d</string>
+    <string name="amount_of_pictures">Antall valgte bilder: %d</string>
+</resources>

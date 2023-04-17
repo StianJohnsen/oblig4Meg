@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
+    <data>
+        <variable
+            name="basket"
+            type="com.example.oblig4Meg.data.Basket" />
+
+
+
+
+        <variable
+            name="picturesFragment"
+            type="com.example.oblig4Meg.PicturesFragment" />
+
+
+    </data>
+
+
+    <androidx.constraintlayout.widget.ConstraintLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/art_image"
+            android:layout_width="150dp"
+            android:layout_height="150dp"
+            android:layout_marginVertical="2dp"
+            android:adjustViewBounds="true"
+            app:imageUrl="@{basket.thumbnailUrl}"
+            app:layout_constraintLeft_toLeftOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:src="@tools:sample/backgrounds/scenic" />
+
+        <TextView
+            android:id="@+id/photos_title"
+            android:layout_width="199dp"
+            android:layout_height="82dp"
+            android:layout_marginLeft="36dp"
+            android:layout_marginTop="16dp"
+            android:text="@{basket.title}"
+            app:layout_constraintLeft_toRightOf="@id/art_image"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <TextView
+            android:id="@+id/photos_size"
+            android:layout_width="204dp"
+            android:layout_height="65dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginBottom="1dp"
+            android:padding="20dp"
+            android:text="@{@string/size_photo(basket.size)}"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintLeft_toRightOf="@id/art_image"
+            app:layout_constraintTop_toBottomOf="@+id/photos_title"
+            app:layout_constraintVertical_bias="0.053" />
+
+        <TextView
+            android:id="@+id/photos_bezel"
+            android:layout_width="199dp"
+            android:layout_height="72dp"
+            android:layout_marginLeft="16dp"
+            android:layout_marginTop="28dp"
+            android:padding="20dp"
+            android:text="@{@string/bezel_photo(basket.bezel)}"
+            app:layout_constraintLeft_toRightOf="@id/art_image"
+            app:layout_constraintTop_toTopOf="@+id/photos_title" />
+
+        <TextView
+            android:id="@+id/textView4"
+            android:layout_width="199dp"
+            android:layout_height="57dp"
+            android:layout_marginStart="16dp"
+            android:layout_marginTop="52dp"
+            android:padding="20dp"
+            android:text="@{@string/price_photo(basket.cost)}"
+
+            app:layout_constraintStart_toEndOf="@+id/art_image"
+            app:layout_constraintTop_toTopOf="@+id/photos_title" />
+
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+
+</layout>
