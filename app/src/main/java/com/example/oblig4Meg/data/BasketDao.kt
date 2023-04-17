@@ -15,5 +15,9 @@ interface BasketDao {
     suspend fun delete(photo: Basket)
 
     @Query("SELECT * FROM basket_case")
-    fun getItems(): Flow<List<Basket>>
+    suspend fun getItems(): List<Basket>
+
+    @Query("DELETE FROM basket_case")
+    suspend fun deleteAll()
+
 }
