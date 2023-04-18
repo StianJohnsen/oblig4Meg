@@ -1,6 +1,5 @@
-package com.example.oblig4Meg.repository
+package com.example.oblig4Meg.repositoryPhotos
 
-import com.example.oblig4Meg.data.Basket
 import com.example.oblig4Meg.network.ArtPhoto
 
 interface IDatasource {

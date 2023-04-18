@@ -1,14 +1,9 @@
 package com.example.oblig4Meg.model
 
-import android.service.autofill.Transformation
 import androidx.lifecycle.*
-import androidx.lifecycle.viewmodel.viewModelFactory
-import com.example.oblig4Meg.data.Basket
-import com.example.oblig4Meg.data.BasketDao
 import com.example.oblig4Meg.network.*
-import com.example.oblig4Meg.repository.BasketRepository
+import com.example.oblig4Meg.repositoryPhotos.BasketRepository
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -54,9 +49,10 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
     private var _single_photo = MutableLiveData<ArtPhoto>()
     val single_photo: LiveData<ArtPhoto> = _single_photo
 
-    private var _photo_basket = MutableLiveData<MutableList<ArtPhoto>>(mutableListOf())
+    private var _photo_basket = MutableLiveData<List<ArtPhoto>>()
+    val photo_basket: LiveData<List<ArtPhoto>>
+        get() = _photo_basket
 
-    val photo_basket: LiveData<MutableList<ArtPhoto>> = _photo_basket
 
     init {
         //getLocalBasket()
@@ -72,49 +68,42 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 
     fun refreshBasket(){
         viewModelScope.launch {
-            try {
-                repository.refreshBasket()
-                    .collect(){
-                        _basket.postValue(it)
-                    }
-            }catch (exception: IOException){
-                repository.getLocalBasket()
-                    .collect(){
-                        _basket.postValue(it)
-                    }
+                val result = repository.refreshBasket()
+                        _photo_basket.value = result
+
             }
         }
-    }
 
-    fun getLocalBasket(){
-        viewModelScope.launch {
-            repository.getLocalBasket()
-                .collect(){
-                    _basket.postValue(it)
-                }
-        }
-    }
 
-    fun deleteBasket(){
-        viewModelScope.launch(Dispatchers.IO){
-            repository.deleteAllBasketDB()
-            _basket.postValue(listOf())
-        }
-    }
+//    fun getLocalBasket(){
+//        viewModelScope.launch {
+//            repository.getLocalBasket()
+//                .collect(){
+//                    _basket.postValue(it)
+//                }
+//        }
+//    }
 
-    fun deleteSingleBasket(){
-        viewModelScope.launch(Dispatchers.IO) {
-            val selected = _selectedBasket.value
-            if (selected != null){
-                repository.deleteSingleBasketDB(selected)
-                _selectedBasket.postValue(null)
-                repository.getLocalBasket()
-                    .collect(){
-                        _basket.postValue(it)
-                    }
-            }
-        }
-    }
+//    fun deleteBasket(){
+//        viewModelScope.launch(Dispatchers.IO){
+//            repository.deleteAllBasketDB()
+//            _basket.postValue(listOf())
+//        }
+//    }
+//
+//    fun deleteSingleBasket(){
+//        viewModelScope.launch(Dispatchers.IO) {
+//            val selected = _selectedBasket.value
+//            if (selected != null){
+//                repository.deleteSingleBasketDB(selected)
+//                _selectedBasket.postValue(null)
+//                repository.getLocalBasket()
+//                    .collect(){
+//                        _basket.postValue(it)
+//                    }
+//            }
+//        }
+//    }
 
 
 
@@ -149,7 +138,6 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 //    }
 
     private fun getArtPhotos() {
-
         viewModelScope.launch {
             _status.value = ArtApiStatus.LOADING
 
@@ -204,10 +192,10 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
         println("Title: ${_single_photo.value?.title}\nSize: ${_single_photo.value?.size}\nBezel: ${_single_photo.value?.bezel}")
     }
 
-    fun insertPhotoBasket(artPhoto: ArtPhoto) {
-        _photo_basket.value?.add(artPhoto)
-        setArtist()
-    }
+//    fun insertPhotoBasket(artPhoto: ArtPhoto) {
+//        _photo_basket.value?.add(artPhoto)
+//        setArtist()
+//    }
 
     fun sumTotalPrice(): Int {
         val sumList = mutableListOf<Int>()

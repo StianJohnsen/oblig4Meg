@@ -30,7 +30,7 @@ class InfoPictureFragment : Fragment(), CellClickListener2 {
     lateinit var basket: Basket
 
     override fun onClickListener2(photo: ArtPhoto) {
-        sharedViewModel.insertPhotoBasket(photo)
+        //sharedViewModel.insertPhotoBasket(photo)
         findNavController().navigate(R.id.action_infoPictureFragment_to_startFragment)
         println("photo_basket: ${sharedViewModel.photo_basket.value}")
     }
@@ -55,7 +55,7 @@ class InfoPictureFragment : Fragment(), CellClickListener2 {
 
 
     fun putInBasket(artPhoto: ArtPhoto) {
-        sharedViewModel.insertPhotoBasket(artPhoto)
+        //sharedViewModel.insertPhotoBasket(artPhoto)
         findNavController().navigate(R.id.action_infoPictureFragment_to_startFragment)
     }
 
