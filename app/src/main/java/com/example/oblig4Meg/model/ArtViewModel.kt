@@ -1,10 +1,16 @@
 package com.example.oblig4Meg.model
 
+import android.service.autofill.Transformation
 import androidx.lifecycle.*
+import androidx.lifecycle.viewmodel.viewModelFactory
 import com.example.oblig4Meg.data.Basket
 import com.example.oblig4Meg.data.BasketDao
 import com.example.oblig4Meg.network.*
+import com.example.oblig4Meg.repository.BasketRepository
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
+import java.io.IOException
 
 
 private const val PRICE_PER_PHOTO = 100.00
@@ -12,9 +18,20 @@ private const val PRICE_PER_PHOTO = 100.00
 
 enum class ArtApiStatus { LOADING, ERROR, DONE }
 
-class ArtViewModel(private val basketDao: BasketDao) : ViewModel() {
+class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 
-    val allItems: LiveData<List<Basket>> = basketDao.getItems().asLiveData()
+    // Sannhetkilden
+    private val _basket = MutableLiveData<List<ArtPhoto>>()
+    val basket: LiveData<List<ArtPhoto>>
+        get() = _basket
+
+    private var _selectedBasket = MutableLiveData<ArtPhoto?>(null)
+    val selectedBasket: LiveData<String> = _selectedBasket.map {
+        if(it!=null)
+            "Valgt: " + it.id.toString()
+        else
+            "Valgt "
+    }
 
     private var _currentPictureId = MutableLiveData<Int>()
     val currentPictureId: LiveData<Int> = _currentPictureId
@@ -42,45 +59,94 @@ class ArtViewModel(private val basketDao: BasketDao) : ViewModel() {
     val photo_basket: LiveData<MutableList<ArtPhoto>> = _photo_basket
 
     init {
-        getArtPhotos()
+        //getLocalBasket()
+        refreshBasket()
     }
 
 
-    private fun insertItem(photo: Basket) {
+//    private fun insertItem(photo: Basket) {
+//        viewModelScope.launch {
+//            basketDao.insert(photo)
+//        }
+//    }
+
+    fun refreshBasket(){
         viewModelScope.launch {
-            basketDao.insert(photo)
+            try {
+                repository.refreshBasket()
+                    .collect(){
+                        _basket.postValue(it)
+                    }
+            }catch (exception: IOException){
+                repository.getLocalBasket()
+                    .collect(){
+                        _basket.postValue(it)
+                    }
+            }
         }
     }
 
-    private fun getNewItemEntry(
-        title: String,
-        size: String,
-        bezelType: String,
-        price: String,
-        amount: String,
-        thumbnailUrl: String
-    ): Basket {
-        return Basket(
-            title = title,
-            size = size,
-            bezel = bezelType,
-            cost = price.toInt(),
-            amount = amount.toInt(),
-            thumbnailUrl = thumbnailUrl
-        )
+    fun getLocalBasket(){
+        viewModelScope.launch {
+            repository.getLocalBasket()
+                .collect(){
+                    _basket.postValue(it)
+                }
+        }
     }
 
-    fun addNewItem(
-        title: String,
-        size: String,
-        bezelType: String,
-        price: String,
-        amount: String,
-        thumbnailUrl: String
-    ) {
-        val newItem = getNewItemEntry(title, size, bezelType, price, amount, thumbnailUrl)
-        insertItem(newItem)
+    fun deleteBasket(){
+        viewModelScope.launch(Dispatchers.IO){
+            repository.deleteAllBasketDB()
+            _basket.postValue(listOf())
+        }
     }
+
+    fun deleteSingleBasket(){
+        viewModelScope.launch(Dispatchers.IO) {
+            val selected = _selectedBasket.value
+            if (selected != null){
+                repository.deleteSingleBasketDB(selected)
+                _selectedBasket.postValue(null)
+                repository.getLocalBasket()
+                    .collect(){
+                        _basket.postValue(it)
+                    }
+            }
+        }
+    }
+
+
+
+//    private fun getNewItemEntry(
+//        title: String,
+//        size: String,
+//        bezelType: String,
+//        price: String,
+//        amount: String,
+//        thumbnailUrl: String
+//    ): Basket {
+//        return Basket(
+//            title = title,
+//            size = size,
+//            bezel = bezelType,
+//            cost = price.toInt(),
+//            amount = amount.toInt(),
+//            thumbnailUrl = thumbnailUrl
+//        )
+//    }
+
+//    fun addNewItem(
+//        title: String,
+//        size: String,
+//        bezelType: String,
+//        price: String,
+//        amount: String,
+//        thumbnailUrl: String
+//    ) {
+//        val newItem = getNewItemEntry(title, size, bezelType, price, amount, thumbnailUrl)
+//        insertItem(newItem)
+//    }
 
     private fun getArtPhotos() {
 
@@ -126,7 +192,7 @@ class ArtViewModel(private val basketDao: BasketDao) : ViewModel() {
     }
 
     fun setArtist() {
-        _single_photo.value?.artist = _artist?.value!!
+        _single_photo.value?.artist = _artist?.value?.name.toString()
     }
 
     fun setBezel(bezel: String) {
@@ -169,11 +235,11 @@ class ArtViewModel(private val basketDao: BasketDao) : ViewModel() {
 }
 
 
-class ArtViewModelFactory(private val basketDao: BasketDao) : ViewModelProvider.Factory {
+class ArtViewModelFactory(private val basketRepository: BasketRepository) : ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArtViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
-            return ArtViewModel(basketDao) as T
+            return ArtViewModel(basketRepository) as T
         }
         throw IllegalArgumentException("unknown ViewModel class")
     }

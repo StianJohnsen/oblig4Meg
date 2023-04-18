@@ -34,11 +34,11 @@ fun bindRecyclerView(recyclerView: RecyclerView, data: List<ArtPhoto>?) {
     adapter.submitList(data)
 }
 
-@BindingAdapter("listData2")
-fun bindRecyclerView2(recyclerView: RecyclerView, data: List<Basket>?) {
-    val adapter = recyclerView.adapter as LinearAdapter
-    adapter.submitList(data)
-}
+//@BindingAdapter("listData2")
+//fun bindRecyclerView2(recyclerView: RecyclerView, data: List<Basket>?) {
+//    val adapter = recyclerView.adapter as LinearAdapter
+//    adapter.submitList(data)
+//}
 
 
 

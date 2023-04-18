@@ -23,8 +23,7 @@ class InfoPictureFragment : Fragment(), CellClickListener2 {
 
     private val sharedViewModel: ArtViewModel by activityViewModels {
         ArtViewModelFactory(
-            (activity?.application as ArtViewApplication).database
-                .basketDao()
+            (activity?.application as ArtViewApplication).basketRepository
         )
     }
 
@@ -64,17 +63,6 @@ class InfoPictureFragment : Fragment(), CellClickListener2 {
         findNavController().navigate(R.id.action_infoPictureFragment_to_picturesFragment)
     }
 
-    fun insertIntoBasket(artPhoto: ArtPhoto){
-        sharedViewModel.addNewItem(
-            artPhoto.title,
-            artPhoto.size,
-            artPhoto.bezel,
-            artPhoto.cost.toString(),
-            "1",
-            artPhoto.thumbnailUrl
-        )
-        findNavController().navigate(R.id.action_infoPictureFragment_to_startFragment)
 
-    }
 
 }

@@ -6,7 +6,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 
 
-@Database(entities = [Basket::class], version = 2, exportSchema = false)
+@Database(entities = [Basket::class], version = 3, exportSchema = false)
 abstract class BasketRoomDatabase : RoomDatabase() {
 
     abstract fun basketDao(): BasketDao

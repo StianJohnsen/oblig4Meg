@@ -27,8 +27,7 @@ class PicturesFragment : Fragment(), CellClickListener {
 
     private val shareViewModel: ArtViewModel by activityViewModels {
         ArtViewModelFactory(
-            (activity?.application as ArtViewApplication).database
-                .basketDao()
+            (activity?.application as ArtViewApplication).basketRepository
         )
     }
 

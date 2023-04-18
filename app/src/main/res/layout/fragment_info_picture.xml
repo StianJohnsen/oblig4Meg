@@ -104,7 +104,7 @@
         android:id="@+id/button"
         android:layout_width="193dp"
         android:layout_height="64dp"
-        android:onClick="@{() -> InfoPictureFragment.insertIntoBasket(viewModel.single_photo)}"
+
         android:text="Legg i handlekurv"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@+id/button2"

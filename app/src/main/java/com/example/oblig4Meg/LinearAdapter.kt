@@ -10,24 +10,24 @@ import com.example.oblig4Meg.data.Basket
 import com.example.oblig4Meg.databinding.LinearViewItemBinding
 import com.example.oblig4Meg.network.ArtPhoto
 
-class LinearAdapter(private val onItemClicked: (Basket) -> Unit): ListAdapter<Basket, LinearAdapter.ArtPhotoLinearViewHolder> (DiffCallback){
+class LinearAdapter(private val onItemClicked: (ArtPhoto) -> Unit): ListAdapter<ArtPhoto, LinearAdapter.ArtPhotoLinearViewHolder> (DiffCallback){
 
 
 
-    companion object DiffCallback: DiffUtil.ItemCallback<Basket>(){
-        override fun areContentsTheSame(oldItem: Basket, newItem: Basket): Boolean {
+    companion object DiffCallback: DiffUtil.ItemCallback<ArtPhoto>(){
+        override fun areContentsTheSame(oldItem: ArtPhoto, newItem: ArtPhoto): Boolean {
             return oldItem.id == newItem.id
         }
 
-        override fun areItemsTheSame(oldItem: Basket, newItem: Basket): Boolean {
+        override fun areItemsTheSame(oldItem: ArtPhoto, newItem: ArtPhoto): Boolean {
             return oldItem.thumbnailUrl == newItem.thumbnailUrl
         }
     }
 
     class ArtPhotoLinearViewHolder(private var binding: LinearViewItemBinding) : RecyclerView.ViewHolder(binding.root)  {
 
-        fun bind(basket: Basket){
-            binding.basket = basket
+        fun bind(artPhoto: ArtPhoto){
+            binding.photo = artPhoto
             binding.executePendingBindings()
         }
     }
@@ -38,10 +38,10 @@ class LinearAdapter(private val onItemClicked: (Basket) -> Unit): ListAdapter<Ba
     }
 
     override fun onBindViewHolder(holder: ArtPhotoLinearViewHolder, position: Int) {
-        val basket = getItem(position)
+        val artPhoto = getItem(position)
         holder.itemView.setOnClickListener {
-            onItemClicked(basket)
+            onItemClicked(artPhoto)
         }
-        holder.bind(basket)
+        holder.bind(artPhoto)
     }
 }

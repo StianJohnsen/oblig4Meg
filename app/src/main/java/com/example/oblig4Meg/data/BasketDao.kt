@@ -5,8 +5,11 @@ import kotlinx.coroutines.flow.Flow
 
 @Dao
 interface BasketDao {
-    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun insert(photo: Basket)
+
+    @Insert(onConflict = OnConflictStrategy.IGNORE)
+    suspend fun insertList(basketList: List<Basket>)
 
     @Update
     suspend fun update(photo: Basket)

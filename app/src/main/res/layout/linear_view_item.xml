@@ -4,8 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools">
     <data>
         <variable
-            name="basket"
-            type="com.example.oblig4Meg.data.Basket" />
+            name="photo"
+            type="com.example.oblig4Meg.network.ArtPhoto" />
 
 
 
@@ -28,7 +28,7 @@
             android:layout_height="150dp"
             android:layout_marginVertical="2dp"
             android:adjustViewBounds="true"
-            app:imageUrl="@{basket.thumbnailUrl}"
+            app:imageUrl="@{photo.thumbnailUrl}"
             app:layout_constraintLeft_toLeftOf="parent"
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toTopOf="parent"
@@ -40,7 +40,7 @@
             android:layout_height="82dp"
             android:layout_marginLeft="36dp"
             android:layout_marginTop="16dp"
-            android:text="@{basket.title}"
+            android:text="@{photo.title}"
             app:layout_constraintLeft_toRightOf="@id/art_image"
             app:layout_constraintTop_toTopOf="parent" />
 
@@ -51,7 +51,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginBottom="1dp"
             android:padding="20dp"
-            android:text="@{@string/size_photo(basket.size)}"
+            android:text="@{@string/size_photo(photo.size)}"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintLeft_toRightOf="@id/art_image"
             app:layout_constraintTop_toBottomOf="@+id/photos_title"
@@ -64,7 +64,7 @@
             android:layout_marginLeft="16dp"
             android:layout_marginTop="28dp"
             android:padding="20dp"
-            android:text="@{@string/bezel_photo(basket.bezel)}"
+            android:text="@{@string/bezel_photo(photo.bezel)}"
             app:layout_constraintLeft_toRightOf="@id/art_image"
             app:layout_constraintTop_toTopOf="@+id/photos_title" />
 
@@ -75,7 +75,7 @@
             android:layout_marginStart="16dp"
             android:layout_marginTop="52dp"
             android:padding="20dp"
-            android:text="@{@string/price_photo(basket.cost)}"
+            android:text="@{@string/price_photo(photo.cost)}"
 
             app:layout_constraintStart_toEndOf="@+id/art_image"
             app:layout_constraintTop_toTopOf="@+id/photos_title" />

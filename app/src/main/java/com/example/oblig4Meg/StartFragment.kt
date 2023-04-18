@@ -24,8 +24,7 @@ class StartFragment : Fragment() {
 
     private val shareViewModel: ArtViewModel by activityViewModels {
         ArtViewModelFactory(
-            (activity?.application as ArtViewApplication).database
-                .basketDao()
+            (activity?.application as ArtViewApplication).basketRepository
         )
     }
 
@@ -54,9 +53,9 @@ class StartFragment : Fragment() {
             photosLinear.adapter = adapter
         }
 
-        shareViewModel.allItems.observe(this.viewLifecycleOwner){ items ->
+        shareViewModel.basket.observe(this.viewLifecycleOwner){ items ->
             items.let {
-                adapter.submitList(it)
+                adapter.submitList(items)
             }
         }
 
@@ -69,11 +68,11 @@ class StartFragment : Fragment() {
         findNavController().navigate(R.id.action_startFragment_to_picturesFragment)
     }
 
-    fun printHelloWord(){
-        shareViewModel.addNewItem("heisann","Stor","Tre","400"
-        ,"100","gegs"
-        )
-    }
+//    fun printHelloWord(){
+//        shareViewModel.addNewItem("heisann","Stor","Tre","400"
+//        ,"100","gegs"
+//        )
+//    }
 
     fun sendOrder() {
 
@@ -82,7 +81,7 @@ class StartFragment : Fragment() {
         var mailString = mutableListOf<String>()
 
         shareViewModel.photo_basket.value?.forEachIndexed { index, it ->
-            mailString.add("${index + 1}\nTitle: ${it.title}\nArtist: ${it.artist.name}\nCost: ${it.cost}Kr\n------------\n")
+            mailString.add("${index + 1}\nTitle: ${it.title}\nArtist: ${it.artist}\nCost: ${it.cost}Kr\n------------\n")
 
         }
 

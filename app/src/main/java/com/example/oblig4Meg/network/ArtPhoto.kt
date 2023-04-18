@@ -12,5 +12,6 @@ data class ArtPhoto(
     var size: String = "undefined",
     var bezel: String = "undefined",
     var cost: Int = -1,
-    var artist: ArtArtist = ArtArtist(),
+    var amount: Int = 1,
+    var artist: String = "undefined",
 )
