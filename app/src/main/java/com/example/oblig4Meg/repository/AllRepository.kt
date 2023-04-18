@@ -7,8 +7,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
 
 class AllRepository constructor(
-    private val basketPhotos: BasketPhotos,
-    private val listOfPhotos: ListOfPhotos
+    private val basketPhotos: BasketPhotos, //Remote
+    private val listOfPhotos: ListOfPhotos //Database
 ){
 
     suspend fun fetchFromDB(): Flow<List<ArtPhoto>>{

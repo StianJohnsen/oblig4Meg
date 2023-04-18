@@ -3,27 +3,37 @@ package com.example.oblig4Meg
 import android.content.Context
 import com.example.oblig4Meg.data.BasketRoomDatabase
 import com.example.oblig4Meg.network.ArtApi
-import com.example.oblig4Meg.repositoryPhotos.BasketRepository
+import com.example.oblig4Meg.repository.AllRepository
+import com.example.oblig4Meg.repository.BasketPhotos
+import com.example.oblig4Meg.repository.ListOfPhotos
 
-import com.example.oblig4Meg.repositoryPhotos.DatasourceRemote
 
 object ServiceLocator {
 
-    var basketRepository: BasketRepository? = null
+    var allRepository: AllRepository? = null
 
-    fun provideBasketRepository(context: Context): BasketRepository{
+    fun provideBasketRepository(context: Context): AllRepository{
         synchronized(this){
-            return basketRepository ?: createBasketRepository(context)
+            return allRepository ?: createBasketRepository(context)
         }
     }
 
+    private fun createBasketRepository(context: Context): AllRepository{
+        val basketData = createLocalDatasource(context)
+        val listPhotosData = createRemoteDatasource(context)
+        val newRepo = AllRepository(basketData,listPhotosData)
+        allRepository = newRepo
+        return newRepo
+    }
 
+    private fun createLocalDatasource(context: Context): BasketPhotos{
+        val database: BasketRoomDatabase by lazy { BasketRoomDatabase.getDatabase(context) }
+        return BasketPhotos(database.basketDao())
+    }
 
-
-
-    private fun createRemoteDataSource(context: Context): DatasourceRemote{
+    private fun createRemoteDatasource(context: Context):ListOfPhotos{
         val retrofitService = ArtApi.retrofitService
-        return DatasourceRemote(retrofitService)
+        return ListOfPhotos(retrofitService)
     }
 
 }

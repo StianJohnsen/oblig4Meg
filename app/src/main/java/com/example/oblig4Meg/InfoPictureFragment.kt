@@ -55,7 +55,7 @@ class InfoPictureFragment : Fragment(), CellClickListener2 {
 
 
     fun putInBasket(artPhoto: ArtPhoto) {
-        //sharedViewModel.insertPhotoBasket(artPhoto)
+        sharedViewModel.insertIntoBasket(artPhoto)
         findNavController().navigate(R.id.action_infoPictureFragment_to_startFragment)
     }
 

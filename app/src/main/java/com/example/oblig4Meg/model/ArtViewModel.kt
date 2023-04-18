@@ -2,8 +2,9 @@ package com.example.oblig4Meg.model
 
 import androidx.lifecycle.*
 import com.example.oblig4Meg.network.*
-import com.example.oblig4Meg.repositoryPhotos.BasketRepository
+import com.example.oblig4Meg.repository.AllRepository
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.launch
 import java.io.IOException
 
@@ -13,7 +14,7 @@ private const val PRICE_PER_PHOTO = 100.00
 
 enum class ArtApiStatus { LOADING, ERROR, DONE }
 
-class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
+class ArtViewModel(private val repository: AllRepository) : ViewModel() {
 
     // Sannhetkilden
     private val _basket = MutableLiveData<List<ArtPhoto>>()
@@ -22,7 +23,7 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 
     private var _selectedBasket = MutableLiveData<ArtPhoto?>(null)
     val selectedBasket: LiveData<String> = _selectedBasket.map {
-        if(it!=null)
+        if (it != null)
             "Valgt: " + it.id.toString()
         else
             "Valgt "
@@ -55,8 +56,8 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 
 
     init {
-        //getLocalBasket()
         refreshBasket()
+        refreshListOfPhotos()
     }
 
 
@@ -66,92 +67,55 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 //        }
 //    }
 
+    fun refreshListOfPhotos() {
+        viewModelScope.launch {
+
+            repository.getListOfPhotos()
+                .collect() {
+                    _photos.value = it
+                }
+
+
+        }
+    }
+
+    fun insertIntoBasket(artPhoto: ArtPhoto){
+        viewModelScope.launch {
+            repository.insertIntoBasket(artPhoto)
+        }
+        refreshBasket()
+    }
+
     fun refreshBasket(){
         viewModelScope.launch {
-                val result = repository.refreshBasket()
-                        _photo_basket.value = result
-
-            }
+            repository.fetchFromDB()
+                .collect(){
+                    _basket.value = it
+                }
         }
-
-
-//    fun getLocalBasket(){
-//        viewModelScope.launch {
-//            repository.getLocalBasket()
-//                .collect(){
-//                    _basket.postValue(it)
-//                }
-//        }
-//    }
-
-//    fun deleteBasket(){
-//        viewModelScope.launch(Dispatchers.IO){
-//            repository.deleteAllBasketDB()
-//            _basket.postValue(listOf())
-//        }
-//    }
-//
-//    fun deleteSingleBasket(){
-//        viewModelScope.launch(Dispatchers.IO) {
-//            val selected = _selectedBasket.value
-//            if (selected != null){
-//                repository.deleteSingleBasketDB(selected)
-//                _selectedBasket.postValue(null)
-//                repository.getLocalBasket()
-//                    .collect(){
-//                        _basket.postValue(it)
-//                    }
-//            }
-//        }
-//    }
-
-
-
-//    private fun getNewItemEntry(
-//        title: String,
-//        size: String,
-//        bezelType: String,
-//        price: String,
-//        amount: String,
-//        thumbnailUrl: String
-//    ): Basket {
-//        return Basket(
-//            title = title,
-//            size = size,
-//            bezel = bezelType,
-//            cost = price.toInt(),
-//            amount = amount.toInt(),
-//            thumbnailUrl = thumbnailUrl
-//        )
-//    }
-
-//    fun addNewItem(
-//        title: String,
-//        size: String,
-//        bezelType: String,
-//        price: String,
-//        amount: String,
-//        thumbnailUrl: String
-//    ) {
-//        val newItem = getNewItemEntry(title, size, bezelType, price, amount, thumbnailUrl)
-//        insertItem(newItem)
-//    }
-
-    private fun getArtPhotos() {
-        viewModelScope.launch {
-            _status.value = ArtApiStatus.LOADING
-
-            try {
-                _photos.value = ArtApi.retrofitService.getPhotos()
-                _status.value = ArtApiStatus.DONE
-            } catch (e: Exception) {
-                _status.value = ArtApiStatus.ERROR
-                _photos.value = listOf()
-            }
-
-        }
-
     }
+
+
+
+
+
+
+
+//    private fun getArtPhotos() {
+//        viewModelScope.launch {
+//            _status.value = ArtApiStatus.LOADING
+//
+//            try {
+//                _photos.value = ArtApi.retrofitService.getPhotos()
+//                _status.value = ArtApiStatus.DONE
+//            } catch (e: Exception) {
+//                _status.value = ArtApiStatus.ERROR
+//                _photos.value = listOf()
+//            }
+//
+//        }
+//
+//    }
 
     private fun getArtArtist(id: Int) {
         viewModelScope.launch {
@@ -223,7 +187,8 @@ class ArtViewModel(private val repository: BasketRepository) : ViewModel() {
 }
 
 
-class ArtViewModelFactory(private val basketRepository: BasketRepository) : ViewModelProvider.Factory {
+class ArtViewModelFactory(private val basketRepository: AllRepository) :
+    ViewModelProvider.Factory {
     override fun <T : ViewModel> create(modelClass: Class<T>): T {
         if (modelClass.isAssignableFrom(ArtViewModel::class.java)) {
             @Suppress("UNCHECKED_CAST")
